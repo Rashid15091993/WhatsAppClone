@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E0E0"
+    tools:context=".ChatActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="30dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/messageEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/textbox_outline"
+                android:ems="10"
+                android:hint="Type a message"
+                android:inputType="textPersonName|textImeMultiLine"
+                android:padding="10dp"
+                android:selectAllOnFocus="false"
+                android:singleLine="true"
+                android:textColor="#9E9696"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:id="@+id/attachment"
+                android:layout_width="150dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_attachment"
+                tools:ignore="VectorDrawableCompat" />
+
+            <ImageView
+                android:id="@+id/camera"
+                android:layout_width="150dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_camera"
+                tools:ignore="VectorDrawableCompat" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/sendBtn"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/circle_green"
+        android:padding="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp"
+        app:srcCompat="@drawable/ic_send"
+        tools:ignore="VectorDrawableCompat"
+        app:tint="#F4EEEE" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>
