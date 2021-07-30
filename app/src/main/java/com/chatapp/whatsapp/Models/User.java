@@ -1,4 +1,4 @@
-package com.chatapp.whatsapp;
+package com.chatapp.whatsapp.Models;
 
 public class User {
 

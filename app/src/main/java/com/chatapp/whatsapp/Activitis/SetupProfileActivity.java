@@ -1,4 +1,4 @@
-package com.chatapp.whatsapp;
+package com.chatapp.whatsapp.Activitis;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import com.chatapp.whatsapp.Models.User;
 import com.chatapp.whatsapp.databinding.ActivitySetupProfileBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;

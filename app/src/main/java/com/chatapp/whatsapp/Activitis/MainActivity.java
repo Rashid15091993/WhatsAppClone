@@ -1,14 +1,16 @@
-package com.chatapp.whatsapp;
+package com.chatapp.whatsapp.Activitis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.chatapp.whatsapp.R;
+import com.chatapp.whatsapp.Models.User;
+import com.chatapp.whatsapp.Adapter.UsersAdapter;
 import com.chatapp.whatsapp.databinding.ActivityMainBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
