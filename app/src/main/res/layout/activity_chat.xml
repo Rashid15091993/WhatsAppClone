@@ -63,16 +63,17 @@
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/circle_green"
-        android:padding="5dp"
-        android:layout_marginBottom="10dp"
         android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circle_green"
+        android:clickable="true"
+        android:padding="5dp"
         app:srcCompat="@drawable/ic_send"
-        tools:ignore="VectorDrawableCompat"
-        app:tint="#F4EEEE" />
+        app:tint="#F4EEEE"
+        tools:ignore="VectorDrawableCompat" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="416dp" />
+        android:layout_height="671dp" />
 </RelativeLayout>
