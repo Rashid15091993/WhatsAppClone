@@ -2,6 +2,7 @@ package com.chatapp.whatsapp.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,6 +13,9 @@ import com.chatapp.whatsapp.Models.Message;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.databinding.ItemReceiveBinding;
 import com.chatapp.whatsapp.databinding.ItemSentBinding;
+import com.github.pgreze.reactions.ReactionPopup;
+import com.github.pgreze.reactions.ReactionsConfig;
+import com.github.pgreze.reactions.ReactionsConfigBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -23,6 +27,9 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     final int ITEM_SENT = 1;
     final int ITEM_RECEIVE = 2;
+
+    String senderRoom;
+    String receiverRoom;
 
     public MessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
@@ -56,12 +63,55 @@ public class MessageAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
 
+        int reactions[] = new int[]{
+                        R.drawable.ic_fb_like,
+                        R.drawable.ic_fb_love,
+                        R.drawable.ic_fb_laugh,
+                        R.drawable.ic_fb_wow,
+                        R.drawable.ic_fb_sad,
+                        R.drawable.ic_fb_angry
+                };
+
+        ReactionsConfig config = new ReactionsConfigBuilder(context)
+                .withReactions(reactions)
+                .build();
+
+        ReactionPopup popup = new ReactionPopup(context, config, (pos) -> {
+            if (holder.getClass() == SentViewHolder.class) {
+                SentViewHolder viewHolder = (SentViewHolder)holder;
+                viewHolder.binding.feelingImage.setImageResource(reactions[pos]);
+                viewHolder.binding.feelingImage.setVisibility(View.VISIBLE);
+            } else {
+                ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
+                viewHolder.binding.feelingImage.setImageResource(reactions[pos]);
+                viewHolder.binding.feelingImage.setVisibility(View.VISIBLE);
+            }
+            return true; // true is closing popup, false is requesting a new selection
+        });
+
         if (holder.getClass() == SentViewHolder.class) {
             SentViewHolder viewHolder = (SentViewHolder)holder;
             viewHolder.binding.message.setText(message.getMessage());
+
+            viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popup.onTouch(v, event);
+                    return false;
+                }
+            });
+
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
             viewHolder.binding.message.setText(message.getMessage());
+
+            viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popup.onTouch(v, event);
+                    return false;
+                }
+            });
         }
 
     }

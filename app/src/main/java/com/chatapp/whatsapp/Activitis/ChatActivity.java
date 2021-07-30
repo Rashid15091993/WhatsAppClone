@@ -83,17 +83,19 @@ public class ChatActivity extends AppCompatActivity {
                 Message message = new Message(messageTxt, senderUid, date.getTime());
                 binding.messageEditText.setText("");
 
+                String randomKey = database.getReference().push().getKey();
+
                 database.getReference().child("chats")
                         .child(senderRoom)
                         .child("messages")
-                        .push()
+                        .child(randomKey)
                         .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         database.getReference().child("chats")
                                 .child(receiverRoom)
                                 .child("messages")
-                                .push()
+                                .child(randomKey)
                                 .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
