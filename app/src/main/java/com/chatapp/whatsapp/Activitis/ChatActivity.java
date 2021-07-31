@@ -54,9 +54,6 @@ public class ChatActivity extends AppCompatActivity {
         binding.recyclerView.setAdapter(adapter);
 
 
-
-
-
         database = FirebaseDatabase.getInstance();
 
         database.getReference().child("chats")
