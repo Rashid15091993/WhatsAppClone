@@ -61,6 +61,7 @@
                 android:itemBackground="@color/grey"
                 app:OtpItemCount="6"
                 app:OtpLineColor="@color/green"
+                android:focusableInTouchMode="true"
                 app:OtpViewType="line" />
 
             <Button

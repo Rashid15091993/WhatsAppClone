@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
                 users.clear();
                 for(DataSnapshot snapshot1: snapshot.getChildren()) {
                     User user = snapshot1.getValue(User.class);
-                    users.add(user);
+                    if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
+                        users.add(user);
                 }
                 usersAdapter.notifyDataSetChanged();
             }
