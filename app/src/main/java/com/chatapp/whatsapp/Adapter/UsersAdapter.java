@@ -14,6 +14,13 @@ import com.chatapp.whatsapp.Activitis.ChatActivity;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.Models.User;
 import com.chatapp.whatsapp.databinding.RowConversationBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -38,6 +45,32 @@ public class UsersAdapter extends  RecyclerView.Adapter<UsersAdapter.UsersViewHo
     @Override
     public void onBindViewHolder(@NonNull UsersAdapter.UsersViewHolder holder, int position) {
         User user = users.get(position);
+
+        String senderId = FirebaseAuth.getInstance().getUid();
+
+        String senderRoom = senderId + user.getUid();
+
+        FirebaseDatabase.getInstance().getReference()
+                .child("chats")
+                .child(senderRoom)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String lastMsg = snapshot.child("lastMsg").getValue(String.class);
+                            long time = snapshot.child("lastMsgTime").getValue(Long.class);
+
+                            holder.binding.lastMsgTextView.setText(lastMsg);
+                        } else {
+                            holder.binding.lastMsgTextView.setText("Tab to chat");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
 
         holder.binding.userNameTextView.setText(user.getName());
 
