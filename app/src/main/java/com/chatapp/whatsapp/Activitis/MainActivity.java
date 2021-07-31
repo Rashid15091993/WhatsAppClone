@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.chatapp.whatsapp.Adapter.TopStatusAdapter;
+import com.chatapp.whatsapp.Models.Status;
 import com.chatapp.whatsapp.Models.UserStatus;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.Models.User;
@@ -24,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -36,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
+
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         users = new ArrayList<>();
         userStatuses = new ArrayList<>();
+
+        database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        user = snapshot.getValue(User.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
 
         usersAdapter = new UsersAdapter(this, users);
         statusAdapter = new TopStatusAdapter(this, userStatuses);
@@ -84,6 +102,37 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        database.getReference().child("stories").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    userStatuses.clear();
+                    for (DataSnapshot storySnapshot : snapshot.getChildren()) {
+                        UserStatus status = new UserStatus();
+                        status.setName(storySnapshot.child("name").getValue(String.class));
+                        status.setProfileImage(storySnapshot.child("profileImage").getValue(String.class));
+                        status.setLastUpdated(storySnapshot.child("lastUpdated").getValue(Long.class));
+
+                        ArrayList<Status> statuses = new ArrayList<>();
+
+                        for (DataSnapshot statusSnapshot : storySnapshot.child("statuses").getChildren()) {
+                            Status sampleStatus = statusSnapshot.getValue(Status.class);
+                            statuses.add(sampleStatus);
+                        }
+
+                        status.setStatuses(statuses);
+                        userStatuses.add(status);
+                    }
+                    statusAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
         });
@@ -124,6 +173,30 @@ public class MainActivity extends AppCompatActivity {
                             reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
+                                    UserStatus userStatus = new UserStatus();
+                                    userStatus.setName(user.getName());
+                                    userStatus.setProfileImage(user.getProfileImage());
+                                    userStatus.setLastUpdated(date.getTime());
+
+                                    HashMap<String, Object> obj = new HashMap<>();
+                                    obj.put("name", userStatus.getName());
+                                    obj.put("profileImage", userStatus.getProfileImage());
+                                    obj.put("lastUpdated", userStatus.getLastUpdated());
+
+                                    String imageUrl = uri.toString();
+                                    Status status = new Status(imageUrl, userStatus.getLastUpdated());
+
+                                    database.getReference()
+                                            .child("stories")
+                                            .child(FirebaseAuth.getInstance().getUid())
+                                            .updateChildren(obj);
+
+                                    database.getReference().child("stories")
+                                            .child(FirebaseAuth.getInstance().getUid())
+                                            .child("statuses")
+                                            .push()
+                                            .setValue(status);
+
                                     dialog.dismiss();
                                 }
                             });
