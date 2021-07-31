@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <View
         android:id="@+id/view3"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="#5E5C5C" />
+        android:background="@drawable/circle_bg" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,13 +22,13 @@
             android:layout_width="match_parent"
             android:layout_height="15dp"
             android:layout_marginTop="5dp"
-            android:background="#737272" />
+            android:background="#8E8B8B" />
 
         <View
             android:id="@+id/view5"
             android:layout_width="match_parent"
             android:layout_height="7dp"
             android:layout_marginTop="5dp"
-            android:background="#6C6C6C" />
+            android:background="#8E8B8B" />
     </LinearLayout>
 </LinearLayout>

@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         binding.recycleView.setAdapter(usersAdapter);
 
         binding.recycleView.showShimmerAdapter();
+        binding.statusListRecyclerView.showShimmerAdapter();
 
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
@@ -131,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                         status.setStatuses(statuses);
                         userStatuses.add(status);
                     }
+                    binding.statusListRecyclerView.hideShimmerAdapter();
                     statusAdapter.notifyDataSetChanged();
                 }
             }
