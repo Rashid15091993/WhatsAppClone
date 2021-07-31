@@ -41,9 +41,6 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         messages = new ArrayList<>();
-        adapter = new MessageAdapter(this, messages);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        binding.recyclerView.setAdapter(adapter);
 
         String name = getIntent().getStringExtra("name");
         String receiverUid = getIntent().getStringExtra("uid");
@@ -51,6 +48,14 @@ public class ChatActivity extends AppCompatActivity {
 
         senderRoom = senderUid + receiverUid;
         receiverRoom = receiverUid + senderUid;
+
+        adapter = new MessageAdapter(this, messages, senderRoom, receiverRoom);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(adapter);
+
+
+
+
 
         database = FirebaseDatabase.getInstance();
 
@@ -63,6 +68,7 @@ public class ChatActivity extends AppCompatActivity {
                         messages.clear();
                         for (DataSnapshot snapshot1: snapshot.getChildren()) {
                             Message message = snapshot1.getValue(Message.class);
+                            message.setMessageId(snapshot1.getKey());
                             messages.add(message);
                         }
 
