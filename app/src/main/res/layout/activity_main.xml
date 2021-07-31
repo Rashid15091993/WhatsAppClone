@@ -18,7 +18,7 @@
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
         android:id="@+id/recycleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,9 +26,14 @@
         android:layout_above="@+id/bottomNavigationView"
         android:layout_marginTop="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/row_conversation">
+        tools:listitem="@layout/row_conversation"
+        app:shimmer_demo_child_count="10"
+        app:shimmer_demo_grid_child_count="2"
+        app:shimmer_demo_layout="@layout/demo_layout"
+        app:shimmer_demo_layout_manager_type="linear_vertical"
+        app:shimmer_demo_angle="20">
 
-    </androidx.recyclerview.widget.RecyclerView>
+    </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/statusListRecyclerView"

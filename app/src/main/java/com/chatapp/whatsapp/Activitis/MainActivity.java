@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding.recycleView.setAdapter(usersAdapter);
 
+        binding.recycleView.showShimmerAdapter();
+
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
                         users.add(user);
                 }
+                binding.recycleView.hideShimmerAdapter();
                 usersAdapter.notifyDataSetChanged();
             }
 
