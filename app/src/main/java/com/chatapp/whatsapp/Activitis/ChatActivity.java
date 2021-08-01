@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.chatapp.whatsapp.Adapter.MessageAdapter;
 import com.chatapp.whatsapp.Models.Message;
+import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.databinding.ActivityChatBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,10 +58,25 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
 
         messages = new ArrayList<>();
 
         String name = getIntent().getStringExtra("name");
+        String profile = getIntent().getStringExtra("image");
+
+        binding.editName.setText(name);
+        Glide.with(ChatActivity.this).load(profile)
+                    .placeholder(R.drawable.avatar)
+                    .into(binding.profileImage);
+        //кнопка стрелка назад
+        binding.imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         receiverUid = getIntent().getStringExtra("uid");
         senderUid = FirebaseAuth.getInstance().getUid();
 
@@ -160,9 +177,10 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        getSupportActionBar().setTitle(name);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        binding.editName.setText(name);
+//
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

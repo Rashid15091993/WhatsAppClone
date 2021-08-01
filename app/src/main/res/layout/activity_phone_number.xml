@@ -61,14 +61,15 @@
                 android:layout_weight="1"
                 android:background="@drawable/textbox_outline"
                 android:ems="10"
-                android:hint="Type your phone number"
                 android:inputType="textPersonName|textImeMultiLine|phone"
                 android:padding="10dp"
                 android:phoneNumber="true"
                 android:selectAllOnFocus="false"
                 android:singleLine="true"
+                android:text="+7"
                 android:textColor="#9E9696"
-                android:textStyle="normal" />
+                android:textStyle="normal"
+                tools:text="+7" />
 
             <Button
                 android:id="@+id/continueBtn"

@@ -22,13 +22,13 @@
             android:layout_width="match_parent"
             android:layout_height="15dp"
             android:layout_marginTop="5dp"
-            android:background="#8E8B8B" />
+            android:background="#B5B3B3" />
 
         <View
             android:id="@+id/view5"
             android:layout_width="match_parent"
             android:layout_height="7dp"
             android:layout_marginTop="5dp"
-            android:background="#8E8B8B" />
+            android:background="#B5B3B3" />
     </LinearLayout>
 </LinearLayout>

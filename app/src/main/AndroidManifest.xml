@@ -19,10 +19,12 @@
         android:theme="@style/Theme.WhatsApp"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".Activitis.ChatActivity"></activity>
+        <activity android:name=".Activitis.ChatActivity"
+            android:theme="@style/Theme.ChatActivity"></activity>
         <activity android:name=".Activitis.SetupProfileActivity" />
         <activity
             android:name=".Activitis.OTPActivity"
+
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".Activitis.PhoneNumberActivity"
