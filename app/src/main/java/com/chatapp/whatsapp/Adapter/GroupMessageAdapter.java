@@ -11,14 +11,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.chatapp.whatsapp.Models.Message;
+import com.chatapp.whatsapp.Models.User;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.databinding.ItemReceiveBinding;
+import com.chatapp.whatsapp.databinding.ItemReceiveGroupBinding;
 import com.chatapp.whatsapp.databinding.ItemSentBinding;
+import com.chatapp.whatsapp.databinding.ItemSentGroupBinding;
 import com.github.pgreze.reactions.ReactionPopup;
 import com.github.pgreze.reactions.ReactionsConfig;
 import com.github.pgreze.reactions.ReactionsConfigBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -39,10 +47,10 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_SENT) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_sent, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_sent_group, parent, false);
             return new SentViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_receive, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_receive_group, parent, false);
             return new ReceiverViewHolder(view);
         }
     }
@@ -106,6 +114,23 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
                         .placeholder(R.drawable.imageholder_)
                         .into(viewHolder.binding.imageView);
             }
+            FirebaseDatabase.getInstance()
+                    .getReference().child("users")
+                    .child(message.getSenderId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                User user = snapshot.getValue(User.class);
+                                viewHolder.binding.editName.setText("@" + user.getName());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
 
             viewHolder.binding.message.setText(message.getMessage());
 
@@ -145,6 +170,25 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
                         .placeholder(R.drawable.imageholder_)
                         .into(viewHolder.binding.imageView);
             }
+
+            FirebaseDatabase.getInstance()
+                    .getReference().child("users")
+                    .child(message.getSenderId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                User user = snapshot.getValue(User.class);
+                                viewHolder.binding.editName.setText("@" +user.getName());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
+
             viewHolder.binding.message.setText(message.getMessage());
 
             if (message.getFeeling() >= 0) {
@@ -181,21 +225,21 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
 
     public class SentViewHolder extends RecyclerView.ViewHolder {
 
-        ItemSentBinding binding;
+        ItemSentGroupBinding binding;
 
         public SentViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = ItemSentBinding.bind(itemView);
+            binding = ItemSentGroupBinding.bind(itemView);
         }
     }
 
     public class ReceiverViewHolder extends  RecyclerView.ViewHolder {
 
-        ItemReceiveBinding binding;
+        ItemReceiveGroupBinding binding;
 
         public ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = ItemReceiveBinding.bind(itemView);
+            binding = ItemReceiveGroupBinding.bind(itemView);
         }
     }
 }
