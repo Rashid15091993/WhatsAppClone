@@ -2,13 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.chatapp.whatsapp">
 
-    // Доступ на чтение записей
-    <uses-permission
-        android:name="android.permission.READ_CONTACTS"/>
-
-    // Доступ на внесение и обновление записей
-    <uses-permission
-        android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -18,13 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsApp"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".Activitis.ChatActivity"
-            android:theme="@style/Theme.ChatActivity"></activity>
+        <activity android:name=".Activitis.GroupActivity"></activity>
+        <activity
+            android:name=".Activitis.ChatActivity"
+            android:theme="@style/Theme.ChatActivity" />
         <activity android:name=".Activitis.SetupProfileActivity" />
         <activity
             android:name=".Activitis.OTPActivity"
-
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".Activitis.PhoneNumberActivity"
@@ -35,8 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activitis.MainActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+            android:name=".Activitis.MainActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <meta-data
             android:name="preloaded_fonts"

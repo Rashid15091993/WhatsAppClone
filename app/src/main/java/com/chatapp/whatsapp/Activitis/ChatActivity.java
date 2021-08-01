@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -62,6 +65,10 @@ public class ChatActivity extends AppCompatActivity {
 
         messages = new ArrayList<>();
 
+
+        database = FirebaseDatabase.getInstance();
+        storage = FirebaseStorage.getInstance();
+
         String name = getIntent().getStringExtra("name");
         String profile = getIntent().getStringExtra("image");
 
@@ -80,6 +87,29 @@ public class ChatActivity extends AppCompatActivity {
         receiverUid = getIntent().getStringExtra("uid");
         senderUid = FirebaseAuth.getInstance().getUid();
 
+        database.getReference().child("presence").child(receiverUid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String status = snapshot.getValue(String.class);
+                    if (!status.isEmpty()) {
+                        if (status.equals("Offline")) {
+                            binding.status.setVisibility(View.VISIBLE);
+
+                        } else {
+                            binding.status.setText(status);
+                            binding.status.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
         senderRoom = senderUid + receiverUid;
         receiverRoom = receiverUid + senderUid;
 
@@ -87,9 +117,6 @@ public class ChatActivity extends AppCompatActivity {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
 
-
-        database = FirebaseDatabase.getInstance();
-        storage = FirebaseStorage.getInstance();
 
         database.getReference().child("chats")
                 .child(senderRoom)
@@ -175,6 +202,33 @@ public class ChatActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 startActivityForResult(intent, 25);
             }
+        });
+
+        final Handler handler = new Handler();
+        binding.messageEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                database.getReference().child("presence").child(senderUid).setValue("typing...");
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(userStoppedTyping, 1000);
+            }
+
+            Runnable userStoppedTyping = new Runnable() {
+                @Override
+                public void run() {
+                    database.getReference().child("presence").child(senderUid).setValue("Online");
+                }
+            };
         });
 
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -269,5 +323,20 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    //Показывает кто онлайн оффлайн
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String currentId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currentId).setValue("Online");
+
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        String currentId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currentId).setValue("Offline");
     }
 }

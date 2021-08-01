@@ -213,11 +213,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.search:
-                Toast.makeText(this, "Search clicked.", Toast.LENGTH_SHORT).show();
+            case R.id.groups:
+                startActivity(new Intent(MainActivity.this, GroupActivity.class));
                 break;
             case R.id.settings:
                 Toast.makeText(this, "Setting Clicked", Toast.LENGTH_SHORT).show();
@@ -230,5 +231,20 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.topmenu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    //Показывает кто онлайн и офлайн
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String currentId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currentId).setValue("Online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        String currentId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currentId).setValue("Offline");
     }
 }
