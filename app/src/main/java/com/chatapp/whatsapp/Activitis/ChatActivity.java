@@ -48,6 +48,9 @@ public class ChatActivity extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseStorage storage;
 
+    String receiverUid;
+    String senderUid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +60,8 @@ public class ChatActivity extends AppCompatActivity {
         messages = new ArrayList<>();
 
         String name = getIntent().getStringExtra("name");
-        String receiverUid = getIntent().getStringExtra("uid");
-        String senderUid = FirebaseAuth.getInstance().getUid();
+        receiverUid = getIntent().getStringExtra("uid");
+        senderUid = FirebaseAuth.getInstance().getUid();
 
         senderRoom = senderUid + receiverUid;
         receiverRoom = receiverUid + senderUid;
@@ -92,7 +95,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     }
                 });
-
+        //отправка сообщения
         binding.sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +149,7 @@ public class ChatActivity extends AppCompatActivity {
                 });
             }
         });
-        //Открывает с иконкой скрепка галереяб и отправка собщением фото\видео
+        //Открывает с иконкой скрепка галерея и отправка собщением фото\видео
         binding.attachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,7 +186,57 @@ public class ChatActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         String filePath = uri.toString();
-                                        Toast.makeText(ChatActivity.this, filePath, Toast.LENGTH_SHORT).show();
+
+                                        String messageTxt = binding.messageEditText.getText().toString();
+                                        Date date = new Date();
+                                        Message message = new Message(messageTxt, senderUid, date.getTime());
+                                        message.setMessage("photo");
+                                        message.setImageUrl(filePath);
+                                        binding.messageEditText.setText("");
+
+                                        String randomKey = database.getReference().push().getKey();
+
+                                        HashMap<String, Object> lastMsgObjc = new HashMap<>();
+                                        lastMsgObjc.put("lastMsg", message.getMessage());
+                                        lastMsgObjc.put("lastMsgTime", date.getTime());
+
+                                        database.getReference().child("chats").child(senderRoom)
+                                                .updateChildren(lastMsgObjc);
+
+                                        database.getReference().child("chats").child(receiverRoom)
+                                                .updateChildren(lastMsgObjc);
+
+                                        database.getReference().child("chats")
+                                                .child(senderRoom)
+                                                .child("messages")
+                                                .child(randomKey)
+                                                .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                database.getReference().child("chats")
+                                                        .child(receiverRoom)
+                                                        .child("messages")
+                                                        .child(randomKey)
+                                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+
+                                                    }
+                                                });
+
+                                                HashMap<String, Object> lastMsgObjc = new HashMap<>();
+                                                lastMsgObjc.put("lastMsg", message.getMessage());
+                                                lastMsgObjc.put("lastMsgTime", date.getTime());
+
+                                                database.getReference().child("chats").child(senderRoom)
+                                                        .updateChildren(lastMsgObjc);
+
+                                                database.getReference().child("chats").child(receiverRoom)
+                                                        .updateChildren(lastMsgObjc);
+
+
+                                            }
+                                        });
                                     }
                                 });
                             }

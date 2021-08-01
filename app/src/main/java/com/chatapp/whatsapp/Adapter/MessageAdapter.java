@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.chatapp.whatsapp.Models.Message;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.databinding.ItemReceiveBinding;
@@ -109,6 +110,16 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
         if (holder.getClass() == SentViewHolder.class) {
             SentViewHolder viewHolder = (SentViewHolder)holder;
+            //Отправка фото
+            if (message.getMessage().equals("photo")) {
+                viewHolder.binding.imageView.setVisibility(View.VISIBLE);
+                viewHolder.binding.message.setVisibility(View.GONE);
+                Glide.with(context)
+                        .load(message.getImageUrl())
+                        .placeholder(R.drawable.imageholder_)
+                        .into(viewHolder.binding.imageView);
+            }
+
             viewHolder.binding.message.setText(message.getMessage());
 
             if (message.getFeeling() >= 0) {
@@ -126,8 +137,27 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 }
             });
 
+            viewHolder.binding.imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popup.onTouch(v, event);
+                    return false;
+                }
+            });
+
+
+
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
+            //Получение фото
+            if (message.getMessage().equals("photo")) {
+                viewHolder.binding.imageView.setVisibility(View.VISIBLE);
+                viewHolder.binding.message.setVisibility(View.GONE);
+                Glide.with(context)
+                        .load(message.getImageUrl())
+                        .placeholder(R.drawable.imageholder_)
+                        .into(viewHolder.binding.imageView);
+            }
             viewHolder.binding.message.setText(message.getMessage());
 
             if (message.getFeeling() >= 0) {
@@ -139,6 +169,14 @@ public class MessageAdapter extends RecyclerView.Adapter {
             }
 
             viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popup.onTouch(v, event);
+                    return false;
+                }
+            });
+
+            viewHolder.binding.imageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     popup.onTouch(v, event);
