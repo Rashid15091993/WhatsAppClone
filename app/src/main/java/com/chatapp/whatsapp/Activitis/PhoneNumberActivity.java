@@ -21,6 +21,7 @@ public class PhoneNumberActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         auth = FirebaseAuth.getInstance();
+        getSupportActionBar().hide();
 
         if (auth.getCurrentUser() != null) {
             Intent intent = new Intent(PhoneNumberActivity.this, MainActivity.class);
@@ -28,7 +29,6 @@ public class PhoneNumberActivity extends AppCompatActivity {
             finish();
         }
 
-        getSupportActionBar().hide();
         binding.editTextPhone.requestFocus();
 
         binding.continueBtn.setOnClickListener(new View.OnClickListener() {

@@ -38,7 +38,7 @@ public class OTPActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         dialog = new ProgressDialog(this);
-        dialog.setMessage("Sending OTP...");
+        dialog.setMessage("Подождите идет загрузка...");
         dialog.setCancelable(false);
         dialog.show();
 
@@ -51,7 +51,7 @@ public class OTPActivity extends AppCompatActivity {
 
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(auth)
                 .setPhoneNumber(phoneNumber)
-                .setTimeout(60L, TimeUnit.SECONDS)
+                .setTimeout(10L, TimeUnit.SECONDS)
                 .setActivity(OTPActivity.this)
                 .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override

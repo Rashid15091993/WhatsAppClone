@@ -116,7 +116,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.binding.message.setVisibility(View.GONE);
                 Glide.with(context)
                         .load(message.getImageUrl())
-                        .placeholder(R.drawable.imageholder_)
                         .into(viewHolder.binding.imageView);
             }
 

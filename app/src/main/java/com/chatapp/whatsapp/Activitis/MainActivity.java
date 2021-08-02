@@ -3,18 +3,29 @@ package com.chatapp.whatsapp.Activitis;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts;
+import android.provider.ContactsContract;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.chatapp.whatsapp.Adapter.TopStatusAdapter;
+import com.chatapp.whatsapp.Models.Contact;
 import com.chatapp.whatsapp.Models.Status;
 import com.chatapp.whatsapp.Models.UserStatus;
 import com.chatapp.whatsapp.R;
@@ -39,9 +50,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 99;
     ActivityMainBinding binding;
     FirebaseDatabase database;
     ArrayList<User> users;
@@ -49,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
+    
 
     User user;
 
@@ -65,6 +79,28 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         users = new ArrayList<>();
         userStatuses = new ArrayList<>();
+
+        // Проверка разрешения
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS) ==
+                PackageManager.PERMISSION_GRANTED)
+        {
+            // Разрешения чтения контактов имеются
+            Log.d("rarar", "Permission is granted");
+        } else {
+            // Разрешений нет
+            Log.d("TAG", "Permission is not granted");
+
+            // Запрос разрешений
+            Log.d("TAG", "Request permissions");
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission
+                                    .READ_CONTACTS},
+                    PERMISSIONS_REQUEST_READ_CONTACTS);
+        }
+
 
         database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
                 .addValueEventListener(new ValueEventListener() {
@@ -220,8 +256,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.groups:
                 startActivity(new Intent(MainActivity.this, GroupActivity.class));
                 break;
-            case R.id.settings:
-                Toast.makeText(this, "Setting Clicked", Toast.LENGTH_SHORT).show();
+            case R.id.search:
+                readContacts(this);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -246,5 +282,61 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         String currentId = FirebaseAuth.getInstance().getUid();
         database.getReference().child("presence").child(currentId).setValue("Offline");
+    }
+
+    //функциия определения контактов телефона
+    private void readContacts(Context context)
+    {
+        Contact contact;
+        Cursor cursor=context.getContentResolver().query(
+                ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+
+        if(cursor.getCount() > 0) {
+            while(cursor.moveToNext()) {
+                contact = new Contact();
+
+                String id = cursor.getString(
+                        cursor.getColumnIndex(
+                                ContactsContract.Contacts._ID));
+                contact.setName(id);
+
+                String name = cursor.getString(
+                        cursor.getColumnIndex(
+                                ContactsContract.Contacts
+                                        .DISPLAY_NAME));
+                contact.setName(name);
+
+                String has_phone = cursor.getString(
+                        cursor.getColumnIndex(
+                                ContactsContract.Contacts
+                                        .HAS_PHONE_NUMBER));
+                if (Integer.parseInt(has_phone) > 0) {
+                    // extract phone number
+                    Cursor pCur;
+                    pCur = context.getContentResolver().query(
+                            ContactsContract.CommonDataKinds
+                                    .Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds
+                                    .Phone.CONTACT_ID + " = ?",
+                            new String[]{id},
+                            null);
+                    while(pCur.moveToNext()) {
+                        String phone = pCur.getString(
+                                pCur.getColumnIndex(
+                                        ContactsContract.
+                                                CommonDataKinds.
+                                                Phone.NUMBER));
+                        contact.setPhone(phone);
+                    }
+                    pCur.close();
+                }
+                Log.d("TaG", "OKEY");
+                Intent intent = new Intent(MainActivity.this, ContactPhoneListActivity.class);
+                intent.putExtra("phoneContact", contact.getPhone());
+                startActivity(intent);
+            }
+        }
     }
 }
