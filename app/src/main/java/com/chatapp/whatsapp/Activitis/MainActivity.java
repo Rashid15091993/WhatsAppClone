@@ -257,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, GroupActivity.class));
                 break;
             case R.id.search:
-                readContacts(this);
+                Intent intent = new Intent(MainActivity.this, ContactPhoneListActivity.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -284,59 +285,5 @@ public class MainActivity extends AppCompatActivity {
         database.getReference().child("presence").child(currentId).setValue("Offline");
     }
 
-    //функциия определения контактов телефона
-    private void readContacts(Context context)
-    {
-        Contact contact;
-        Cursor cursor=context.getContentResolver().query(
-                ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
 
-        if(cursor.getCount() > 0) {
-            while(cursor.moveToNext()) {
-                contact = new Contact();
-
-                String id = cursor.getString(
-                        cursor.getColumnIndex(
-                                ContactsContract.Contacts._ID));
-                contact.setName(id);
-
-                String name = cursor.getString(
-                        cursor.getColumnIndex(
-                                ContactsContract.Contacts
-                                        .DISPLAY_NAME));
-                contact.setName(name);
-
-                String has_phone = cursor.getString(
-                        cursor.getColumnIndex(
-                                ContactsContract.Contacts
-                                        .HAS_PHONE_NUMBER));
-                if (Integer.parseInt(has_phone) > 0) {
-                    // extract phone number
-                    Cursor pCur;
-                    pCur = context.getContentResolver().query(
-                            ContactsContract.CommonDataKinds
-                                    .Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds
-                                    .Phone.CONTACT_ID + " = ?",
-                            new String[]{id},
-                            null);
-                    while(pCur.moveToNext()) {
-                        String phone = pCur.getString(
-                                pCur.getColumnIndex(
-                                        ContactsContract.
-                                                CommonDataKinds.
-                                                Phone.NUMBER));
-                        contact.setPhone(phone);
-                    }
-                    pCur.close();
-                }
-                Log.d("TaG", "OKEY");
-                Intent intent = new Intent(MainActivity.this, ContactPhoneListActivity.class);
-                intent.putExtra("phoneContact", contact.getPhone());
-                startActivity(intent);
-            }
-        }
-    }
 }

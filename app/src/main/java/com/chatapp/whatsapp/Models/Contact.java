@@ -3,8 +3,17 @@ package com.chatapp.whatsapp.Models;
 public class Contact
 {
     private String id;
-    private String name  = "";
-    private String phone = "";
+    private String name;
+    private String phone;
+
+    public Contact() {
+
+    }
+    public Contact(String phone) {
+        this.phone = phone;
+
+
+    }
 
 
     public String getName() {
