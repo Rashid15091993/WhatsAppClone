@@ -23,6 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
 public class ContactPhoneListActivity extends AppCompatActivity {
@@ -33,21 +36,24 @@ public class ContactPhoneListActivity extends AppCompatActivity {
     Contact contactModule;
     List<String> listElementPhone;
     ArrayList<User> users;
+    Hashtable<String, String> dictName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityContactPhoneListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         contact = new ArrayList<>();
         List<String> listElementPhone = new ArrayList<>();
+        Hashtable<String, String> dictName = new Hashtable<String, String>();
 
         contactAdapter = new ContactPhoneAdapter(this, contact);
         binding.recycleViewContact.setAdapter(contactAdapter);
         Contact contacts = new Contact();
 
         database = FirebaseDatabase.getInstance();
-
+        //Определения номера телефона и имени  контактов телефона
         Cursor cursor=this.getContentResolver().query(
                 ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
@@ -93,12 +99,13 @@ public class ContactPhoneListActivity extends AppCompatActivity {
                     pCur.close();
                 }
 
+                dictName.put(contactModule.getPhone(), contactModule.getName());
                 listElementPhone.add(contactModule.getPhone());
 
             }
         }
 
-
+        //Поиск вывод в приложения тех контактов которые зарегистрированы в приложении
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -108,14 +115,16 @@ public class ContactPhoneListActivity extends AppCompatActivity {
                     String phoneDataBase = snapshot1.child("phoneNumber").getValue().toString();
 
                     for(String elementPhone : listElementPhone) {
-                        Log.d("ELEMENT", elementPhone);
+
                         String replaceContact1 = elementPhone.replace("-", "");
                         String replaceContact12 = replaceContact1.replace(" ", "");
 
                         if (phoneDataBase.equals(replaceContact12)){
                             Log.d("Connect", contactModule.getName());
-                            user.setName(contactModule.getName());
                             user.setPhone(replaceContact12);
+
+                            user.setName(String.valueOf(dictName.get(elementPhone)));
+                            Log.d("ELEMENT", String.valueOf(dictName));
                             contact.add(user);
                         }
                         else {
