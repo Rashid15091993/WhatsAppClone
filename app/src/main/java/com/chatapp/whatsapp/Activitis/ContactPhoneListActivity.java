@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContactPhoneListActivity extends AppCompatActivity {
     ActivityContactPhoneListBinding binding;
@@ -30,7 +31,7 @@ public class ContactPhoneListActivity extends AppCompatActivity {
     ContactPhoneAdapter contactAdapter;
     FirebaseDatabase database;
     Contact contactModule;
-
+    List<String> listElementPhone;
     ArrayList<User> users;
 
     @Override
@@ -39,6 +40,7 @@ public class ContactPhoneListActivity extends AppCompatActivity {
         binding = ActivityContactPhoneListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         contact = new ArrayList<>();
+        List<String> listElementPhone = new ArrayList<>();
 
         contactAdapter = new ContactPhoneAdapter(this, contact);
         binding.recycleViewContact.setAdapter(contactAdapter);
@@ -91,6 +93,8 @@ public class ContactPhoneListActivity extends AppCompatActivity {
                     pCur.close();
                 }
 
+                listElementPhone.add(contactModule.getPhone());
+
             }
         }
 
@@ -100,20 +104,23 @@ public class ContactPhoneListActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot snapshot1: snapshot.getChildren()) {
                     Contact user = new Contact();
+
                     String phoneDataBase = snapshot1.child("phoneNumber").getValue().toString();
 
-                    String replaceContact1 = contactModule.getPhone().replace("-", "");
-                    String replaceContact12 = replaceContact1.replace(" ", "");
-                    Log.d("USERS", replaceContact12);
-                    Log.d("PHONE", phoneDataBase);
-                    if (phoneDataBase.equals(replaceContact12)){
-                        Log.d("Connect", contactModule.getName());
-                        user.setName(contactModule.getName());
-                        user.setPhone(phoneDataBase);
-                        contact.add(user);
-                    }
-                    else {
-                        continue;
+                    for(String elementPhone : listElementPhone) {
+                        Log.d("ELEMENT", elementPhone);
+                        String replaceContact1 = elementPhone.replace("-", "");
+                        String replaceContact12 = replaceContact1.replace(" ", "");
+
+                        if (phoneDataBase.equals(replaceContact12)){
+                            Log.d("Connect", contactModule.getName());
+                            user.setName(contactModule.getName());
+                            user.setPhone(replaceContact12);
+                            contact.add(user);
+                        }
+                        else {
+                            continue;
+                        }
                     }
 
                 }
