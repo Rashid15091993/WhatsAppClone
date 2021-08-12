@@ -116,9 +116,10 @@ public class ContactPhoneListActivity extends AppCompatActivity {
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     Contact user = new Contact();
-
+                    String senderId = FirebaseAuth.getInstance().getUid();
                     String phoneDataBase = snapshot1.child("phoneNumber").getValue().toString();
 
                     for (String elementPhone : listElementPhone) {
@@ -126,6 +127,7 @@ public class ContactPhoneListActivity extends AppCompatActivity {
                         String replaceContact12 = replaceContact1.replace(" ", "");
 
                         if (phoneDataBase.equals(replaceContact12)) {
+                            user.setUid(senderId);
                             user.setPhone(replaceContact12);
                             user.setName(String.valueOf(dictName.get(elementPhone)));
 

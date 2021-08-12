@@ -55,8 +55,20 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
         holder.binding.nameNumericTextView.setText(contactphone.getName());
         holder.binding.phoneContactTextView.setText(contactphone.getPhone());
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("uid", contactphone.getUid());
+                intent.putExtra("name", contactphone.getName());
+                context.startActivity(intent);
+            }
+        });
+
 
     }
+
+
 
     @Override
     public int getItemCount() {

@@ -2,17 +2,25 @@ package com.chatapp.whatsapp.Models;
 
 public class Contact
 {
-    private String id;
+    private String uid;
     private String name;
     private String phone;
 
     public Contact() {
 
     }
-    public Contact(String phone) {
+    public Contact(String phone, String uid) {
+        this.uid = uid;
         this.phone = phone;
 
 
+    }
+
+    public String getUid() {
+        return uid;
+    }
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
 
@@ -30,10 +38,4 @@ public class Contact
         this.phone = phone;
     }
 
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
 }
