@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/search"
-        android:icon="@drawable/ic_messager_icon"
+        android:icon="@drawable/notepad"
         android:title="Message"
         app:showAsAction="always" />
     <item

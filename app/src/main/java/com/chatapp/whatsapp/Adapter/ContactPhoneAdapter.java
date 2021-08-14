@@ -18,14 +18,6 @@ import com.chatapp.whatsapp.Models.Contact;
 import com.chatapp.whatsapp.Models.User;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.databinding.RowContactphoneBinding;
-import com.chatapp.whatsapp.databinding.RowConversationBinding;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -59,8 +51,8 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("uid", contactphone.getUid());
-                intent.putExtra("name", contactphone.getName());
+                intent.putExtra("uid_phone", contactphone.getUid());
+                intent.putExtra("name_contact", contactphone.getName());
                 context.startActivity(intent);
             }
         });

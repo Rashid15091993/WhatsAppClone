@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.chatapp.whatsapp.Adapter.ContactPhoneAdapter;
 import com.chatapp.whatsapp.Adapter.TopStatusAdapter;
 import com.chatapp.whatsapp.Models.Contact;
 import com.chatapp.whatsapp.Models.Status;
@@ -57,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 99;
     ActivityMainBinding binding;
     FirebaseDatabase database;
-    ArrayList<User> users;
-    UsersAdapter usersAdapter;
+    ArrayList<Contact> users;
+    ContactPhoneAdapter usersAdapter;
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        usersAdapter = new UsersAdapter(this, users);
+        usersAdapter = new ContactPhoneAdapter(this, users);
         statusAdapter = new TopStatusAdapter(this, userStatuses);
         //binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
                 for(DataSnapshot snapshot1: snapshot.getChildren()) {
-                    User user = snapshot1.getValue(User.class);
+                    Contact user = snapshot1.getValue(Contact.class);
                     if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
                         users.add(user);
                 }

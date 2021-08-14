@@ -72,7 +72,7 @@ public class ChatActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        String name = getIntent().getStringExtra("name");
+        String name = getIntent().getStringExtra("name_contact");
         String profile = getIntent().getStringExtra("image");
 
         binding.editName.setText(name);
@@ -87,7 +87,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        receiverUid = getIntent().getStringExtra("uid");
+        receiverUid = getIntent().getStringExtra("uid_phone");
         senderUid = FirebaseAuth.getInstance().getUid();
 
         database.getReference().child("presence").child(receiverUid).addValueEventListener(new ValueEventListener() {
