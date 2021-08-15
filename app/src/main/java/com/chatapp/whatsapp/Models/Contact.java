@@ -1,7 +1,6 @@
 package com.chatapp.whatsapp.Models;
 
-public class Contact
-{
+public class Contact extends User {
     private String uid;
     private String name;
     private String phone;

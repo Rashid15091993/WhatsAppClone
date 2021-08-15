@@ -10,28 +10,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts;
-import android.provider.ContactsContract;
+
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.chatapp.whatsapp.Adapter.ContactPhoneAdapter;
 import com.chatapp.whatsapp.Adapter.TopStatusAdapter;
+import com.chatapp.whatsapp.Adapter.UsersAdapter;
 import com.chatapp.whatsapp.Models.Contact;
 import com.chatapp.whatsapp.Models.Status;
 import com.chatapp.whatsapp.Models.UserStatus;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.Models.User;
-import com.chatapp.whatsapp.Adapter.UsersAdapter;
 import com.chatapp.whatsapp.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,15 +46,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 99;
     ActivityMainBinding binding;
     FirebaseDatabase database;
-    ArrayList<Contact> users;
-    ContactPhoneAdapter usersAdapter;
+    ArrayList<User> users;
+    UsersAdapter usersAdapter;
     TopStatusAdapter statusAdapter;
     ArrayList<UserStatus> userStatuses;
     ProgressDialog dialog;
@@ -115,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        usersAdapter = new ContactPhoneAdapter(this, users);
+        usersAdapter = new UsersAdapter(this, users);
         statusAdapter = new TopStatusAdapter(this, userStatuses);
         //binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -133,8 +127,10 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
                 for(DataSnapshot snapshot1: snapshot.getChildren()) {
-                    Contact user = snapshot1.getValue(Contact.class);
-                    if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
+
+                    User user = snapshot1.getValue(User.class);
+                    String uid = getIntent().getStringExtra("uid");
+                    if (!user.getUid().equals(uid))
                         users.add(user);
                 }
                 binding.recycleView.hideShimmerAdapter();

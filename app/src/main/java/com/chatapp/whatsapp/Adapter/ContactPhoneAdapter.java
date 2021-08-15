@@ -18,6 +18,9 @@ import com.chatapp.whatsapp.Models.Contact;
 import com.chatapp.whatsapp.Models.User;
 import com.chatapp.whatsapp.R;
 import com.chatapp.whatsapp.databinding.RowContactphoneBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -26,6 +29,8 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
     Context context;
     ArrayList<Contact> contacts;
     Contact contactphone;
+    FirebaseDatabase database;
+    String receiverUid;
 
     public ContactPhoneAdapter(Context context, ArrayList<Contact> contacts) {
         this.context = context;
@@ -44,6 +49,8 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
     public void onBindViewHolder(@NonNull ContactPhoneAdapter.ContactViewHolder holder, int position) {
         Contact contactphone = contacts.get(position);
 
+        database = FirebaseDatabase.getInstance();
+
         holder.binding.nameNumericTextView.setText(contactphone.getName());
         holder.binding.phoneContactTextView.setText(contactphone.getPhone());
 
@@ -51,9 +58,22 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("uid_phone", contactphone.getUid());
-                intent.putExtra("name_contact", contactphone.getName());
+                intent.putExtra("name", contactphone.getName());
+                intent.putExtra("image", contactphone.getProfileImage());
+                intent.putExtra("uid", contactphone.getUid());
+                Log.d("TEST", contactphone.getUid());
                 context.startActivity(intent);
+
+                database.getReference()
+                        .child("chats_my_list")
+                        .child(contactphone.getUid())
+                        .setValue(contactphone.getPhone())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+
+                            }
+                        });
             }
         });
 

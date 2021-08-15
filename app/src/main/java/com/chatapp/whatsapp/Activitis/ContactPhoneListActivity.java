@@ -13,14 +13,19 @@ import android.util.Log;
 import com.chatapp.whatsapp.Adapter.ContactPhoneAdapter;
 import com.chatapp.whatsapp.Adapter.UsersAdapter;
 import com.chatapp.whatsapp.Models.Contact;
+import com.chatapp.whatsapp.Models.Message;
 import com.chatapp.whatsapp.Models.User;
 import com.chatapp.whatsapp.databinding.ActivityContactPhoneListBinding;
 import com.chatapp.whatsapp.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -119,8 +124,9 @@ public class ContactPhoneListActivity extends AppCompatActivity {
 
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     Contact user = new Contact();
-                    String senderId = FirebaseAuth.getInstance().getUid();
+
                     String phoneDataBase = snapshot1.child("phoneNumber").getValue().toString();
+                    String senderId = snapshot1.child("uid").getValue().toString();
 
                     for (String elementPhone : listElementPhone) {
                         String replaceContact1 = elementPhone.replace("-", "");
@@ -132,11 +138,13 @@ public class ContactPhoneListActivity extends AppCompatActivity {
                             user.setName(String.valueOf(dictName.get(elementPhone)));
 
                             contact.add(user);
+                            Log.d("TEST", user.getUid());
                         } else {
                             continue;
                         }
                     }
                 }
+
                 contactAdapter.notifyDataSetChanged();
             }
 
@@ -145,5 +153,6 @@ public class ContactPhoneListActivity extends AppCompatActivity {
 
             }
         });
+
     }
 }
