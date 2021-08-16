@@ -66,13 +66,11 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
                 intent.putExtra("uid", contactphone.getUid());
                 Log.d("TEST", contactphone.getUid());
                 context.startActivity(intent);
-
+                Contact userPhone = new Contact(contactphone.getPhone(), contactphone.getName(), contactphone.getUid());
                 database.getReference()
                         .child("chats_my_list")
                         .child(userDataBase)
-                        .child(contactphone.getUid())
-                        .child(contactphone.getName())
-                        .setValue(contactphone.getPhone())
+                        .setValue(userPhone)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {

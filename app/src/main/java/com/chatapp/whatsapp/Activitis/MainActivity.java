@@ -96,11 +96,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
+        database.getReference().child("chats_my_list").child(FirebaseAuth.getInstance().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        user = snapshot.getValue(User.class);
+                        user = snapshot.getValue(Contact.class);
                     }
 
                     @Override
@@ -122,16 +122,15 @@ public class MainActivity extends AppCompatActivity {
         binding.recycleView.showShimmerAdapter();
         binding.statusListRecyclerView.showShimmerAdapter();
 
-        database.getReference().child("users").addValueEventListener(new ValueEventListener() {
+        database.getReference().child("chats_my_list").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
                 for(DataSnapshot snapshot1: snapshot.getChildren()) {
 
-                    User user = snapshot1.getValue(User.class);
-                    String uid = getIntent().getStringExtra("uid");
-                    if (!user.getUid().equals(uid))
-                        users.add(user);
+                    Contact user = snapshot1.getValue(Contact.class);
+
+                    users.add(user);
                 }
                 binding.recycleView.hideShimmerAdapter();
                 usersAdapter.notifyDataSetChanged();

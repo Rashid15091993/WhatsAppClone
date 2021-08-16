@@ -8,11 +8,10 @@ public class Contact extends User {
     public Contact() {
 
     }
-    public Contact(String phone, String uid) {
+    public Contact(String phone, String name, String uid) {
         this.uid = uid;
+        this.name = name;
         this.phone = phone;
-
-
     }
 
     public String getUid() {
