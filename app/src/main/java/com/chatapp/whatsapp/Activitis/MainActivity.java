@@ -249,9 +249,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.groups:
-                startActivity(new Intent(MainActivity.this, GroupActivity.class));
-                break;
+//            case R.id.groups:
+//                startActivity(new Intent(MainActivity.this, GroupActivity.class));
+//                break;
             case R.id.search:
                 Intent intent = new Intent(MainActivity.this, ContactPhoneListActivity.class);
                 startActivity(intent);

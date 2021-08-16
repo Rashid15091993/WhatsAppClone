@@ -7,13 +7,5 @@
         android:icon="@drawable/notepad"
         android:title="Message"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/groups"
-        android:title="Groups" />
-    <item
-        android:id="@+id/invite"
-        android:title="Invite" />
-    <item
-        android:id="@+id/settings"
-        android:title="Settings" />
+
 </menu>

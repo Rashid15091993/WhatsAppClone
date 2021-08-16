@@ -311,18 +311,18 @@ public class ChatActivity extends AppCompatActivity {
         database.getReference().child("presence").child(currentId).setValue("Offline");
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.groups:
-                break;
-            case R.id.settings:
-                Toast.makeText(this, "Setting Clicked", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @SuppressLint("NonConstantResourceId")
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.groups:
+//                break;
+//            case R.id.settings:
+//                Toast.makeText(this, "Setting Clicked", Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

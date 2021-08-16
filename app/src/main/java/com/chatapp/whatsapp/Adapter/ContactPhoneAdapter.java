@@ -30,7 +30,8 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
     ArrayList<Contact> contacts;
     Contact contactphone;
     FirebaseDatabase database;
-    String receiverUid;
+    FirebaseAuth auth;
+    String userDataBase;
 
     public ContactPhoneAdapter(Context context, ArrayList<Contact> contacts) {
         this.context = context;
@@ -50,6 +51,8 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
         Contact contactphone = contacts.get(position);
 
         database = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
+        userDataBase = auth.getCurrentUser().getUid();
 
         holder.binding.nameNumericTextView.setText(contactphone.getName());
         holder.binding.phoneContactTextView.setText(contactphone.getPhone());
@@ -66,7 +69,9 @@ public class ContactPhoneAdapter extends  RecyclerView.Adapter<ContactPhoneAdapt
 
                 database.getReference()
                         .child("chats_my_list")
+                        .child(userDataBase)
                         .child(contactphone.getUid())
+                        .child(contactphone.getName())
                         .setValue(contactphone.getPhone())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
